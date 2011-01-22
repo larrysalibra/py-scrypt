@@ -24,6 +24,11 @@ Installation
     Run tests after install:
     $ python tests/scrypt-tests.py
 
+
+If you want py-scrypt for your Python 3 environment, just run the
+above commands with your Python 3 interpreter. Py-scrypt supports both
+Python 2 and 3.
+
 Usage
 -----
 
