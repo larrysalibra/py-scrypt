@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from distutils.core import setup, Extension
+
 import sys
+import platform
 
 if sys.platform == 'linux2':
     define_macros = [('HAVE_CLOCK_GETTIME', '1'),
@@ -18,7 +20,7 @@ else:
 
 
 scrypt_module = Extension('scrypt', 
-                          sources=['src/scrypt.c',
+                          sources=['src/scrypt{0}.c'.format(platform.python_version_tuple()[0]),
                                    'scrypt-1.1.6/lib/crypto/crypto_aesctr.c',
                                    'scrypt-1.1.6/lib/crypto/crypto_scrypt-nosse.c',
                                    'scrypt-1.1.6/lib/crypto/sha256.c',
