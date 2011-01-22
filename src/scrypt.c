@@ -57,16 +57,25 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "SSd", &input, &password, &maxtime)) {
         return NULL;
     }
+
+		Py_INCREF(input);
+		Py_INCREF(password);
     
     inputlen = PyString_Size((PyObject*) input);
     passwordlen = PyString_Size((PyObject*) password);
     
     outbuf = PyMem_Malloc(inputlen+129);
+
+		Py_BEGIN_ALLOW_THREADS;
     errorcode = scryptenc_buf((uint8_t *) PyString_AsString((PyObject*) input), inputlen, 
                               outbuf, 
                               (uint8_t *) PyString_AsString((PyObject*) password), passwordlen,
                               0, 0, maxtime);
-                              
+		Py_END_ALLOW_THREADS;
+
+		Py_DECREF(password);
+		Py_DECREF(input);
+		
     PyObject *value = NULL;
     if (errorcode != 0) {
         PyErr_Format(ScryptError, "%s", errorCodes[errorcode]);
@@ -89,15 +98,24 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "SSd", &input, &password, &maxtime)) {
         return NULL;
     }
+
+		Py_INCREF(input);
+		Py_INCREF(password);
     
     inputlen = PyString_Size((PyObject*) input);
     passwordlen = PyString_Size((PyObject*) password);
     
     outbuf = PyMem_Malloc(inputlen);
+
+		Py_BEGIN_ALLOW_THREADS;
     errorcode = scryptdec_buf((uint8_t *) PyString_AsString((PyObject *) input), inputlen,
                               outbuf, &outputlen,
                               (uint8_t *) PyString_AsString((PyObject *) password), passwordlen,
                               0, 0, maxtime);
+		Py_END_ALLOW_THREADS;
+
+		Py_DECREF(password);
+		Py_DECREF(input);
     
     PyObject *value = NULL;
     if (errorcode != 0) {
