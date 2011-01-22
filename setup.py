@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 from distutils.core import setup, Extension
+import sys
+
+if sys.platform == 'linux2':
+    define_macros = [('HAVE_CLOCK_GETTIME', '1'),
+                     ('HAVE_LIBRT', '1'),
+                     ('HAVE_STRUCT_SYSINFO', '1'),
+                     ('HAVE_STRUCT_SYSINFO_MEM_UNIT', '1'),
+                     ('HAVE_STRUCT_SYSINFO_TOTALRAM', '1'),
+                     ('HAVE_SYSINFO', '1'),
+                     ('HAVE_SYS_SYSINFO_H', '1'),
+                     ('_FILE_OFFSET_BITS', '64')]
+    libraries = ['crypto', 'rt']
+else:
+    define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
+    libraries = ['crypto']
+
 
 scrypt_module = Extension('scrypt', 
                           sources=['src/scrypt.c',
@@ -15,8 +31,8 @@ scrypt_module = Extension('scrypt',
                                         'scrypt-1.1.6/lib/scryptenc',
                                         'scrypt-1.1.6/lib/crypto',
                                         'scrypt-1.1.6/lib/util'],
-                          define_macros=[('HAVE_CONFIG_H', None)],
-                          libraries=['crypto'])
+                          define_macros=[('HAVE_CONFIG_H', None)] + define_macros,
+                          libraries=libraries)
 
 setup(name='scrypt',
       version='0.1.0',

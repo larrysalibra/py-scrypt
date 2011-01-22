@@ -45,7 +45,7 @@
 /* #undef HAVE_STRUCT_SYSINFO_TOTALRAM */
 
 /* Define to 1 if the OS has a hw.usermem sysctl */
-#define HAVE_SYSCTL_HW_USERMEM 1
+/* #undef HAVE_SYSCTL_HW_USERMEM */
 
 /* Define to 1 if you have the `sysinfo' function. */
 /* #undef HAVE_SYSINFO */
