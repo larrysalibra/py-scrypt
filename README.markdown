@@ -38,8 +38,8 @@ the scrypt module:
 	>>> import scrypt
 	>>> data = scrypt.encrypt('a secret message', 'password', maxtime=0.1) # This will take at least 0.1 seconds
 	>>> data[:20]
-  'scrypt\x00\r\x00\x00\x00\x08\x00\x00\x00\x01RX9H'
-  >>> scrypt.decrypt(data, 'password', maxtime=0.1) # This will also take at least 0.1 seconds
+	'scrypt\x00\r\x00\x00\x00\x08\x00\x00\x00\x01RX9H'
+	>>> scrypt.decrypt(data, 'password', maxtime=0.1) # This will also take at least 0.1 seconds
 	'a secret message'
 	>>> scrypt.decrypt(data, 'password', maxtime=0.05) # scrypt won't be able to decrypt this data fast enough
 	Traceback (most recent call last):
