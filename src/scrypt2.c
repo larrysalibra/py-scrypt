@@ -30,7 +30,7 @@
 
 static PyObject *ScryptError;
 
-static const char *errorCodes[] = {
+static const char *g_error_codes[] = {
     "success",
     "getrlimit or sysctl(hw.usermem) failed",
     "clock_getres or clock_gettime failed",
@@ -46,15 +46,23 @@ static const char *errorCodes[] = {
     "error writing output file",
     "error reading input file"
 };
+static char *g_kwlist[] = {"input", "password", "maxtime", "maxmem", "maxmemfrac", NULL};
+static const size_t g_maxmem_default = 0;
+static const double g_maxmemfrac_default = 0.5;
+static const double g_maxtime_default = 300.0;
 
-static PyObject *scrypt_encrypt(PyObject *self, PyObject *args) {
+static PyObject *scrypt_encrypt(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyStringObject *input, *password;
     int inputlen, passwordlen;
     int errorcode;
-    double maxtime;
+		size_t maxmem = g_maxmem_default;
+		double maxmemfrac = g_maxmemfrac_default;
+    double maxtime = g_maxtime_default;
     uint8_t *outbuf;
     
-    if (!PyArg_ParseTuple(args, "SSd", &input, &password, &maxtime)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|dnd", g_kwlist,
+																		 &input, &password,
+																		 &maxtime, &maxmem, &maxmemfrac)) {
         return NULL;
     }
 
@@ -70,7 +78,7 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args) {
     errorcode = scryptenc_buf((uint8_t *) PyString_AsString((PyObject*) input), inputlen, 
                               outbuf, 
                               (uint8_t *) PyString_AsString((PyObject*) password), passwordlen,
-                              0, 0, maxtime);
+                              maxmem, maxmemfrac, maxtime);
 		Py_END_ALLOW_THREADS;
 
 		Py_DECREF(password);
@@ -78,7 +86,7 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args) {
 		
     PyObject *value = NULL;
     if (errorcode != 0) {
-        PyErr_Format(ScryptError, "%s", errorCodes[errorcode]);
+        PyErr_Format(ScryptError, "%s", g_error_codes[errorcode]);
         PyErr_SetNone(ScryptError);
     } else {
         value = Py_BuildValue("z#", outbuf, inputlen+128);
@@ -88,14 +96,18 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args) {
     return value;
 }
 
-static PyObject *scrypt_decrypt(PyObject *self, PyObject *args) {
-    PyStringObject *input, *output, *password;
-    int inputlen, outputlen, passwordlen;
+static PyObject *scrypt_decrypt(PyObject *self, PyObject *args, PyObject* kwargs) {
+    PyStringObject *input, *password;
+    size_t inputlen, outputlen, passwordlen;
     int errorcode;
-    double maxtime;
+		size_t maxmem = g_maxmem_default;
+		double maxmemfrac = g_maxmemfrac_default;
+    double maxtime = g_maxtime_default;
     uint8_t *outbuf;
     
-    if (!PyArg_ParseTuple(args, "SSd", &input, &password, &maxtime)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|dnd", g_kwlist,
+																		 &input, &password,
+																		 &maxtime, &maxmem, &maxmemfrac)) {
         return NULL;
     }
 
@@ -111,7 +123,7 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args) {
     errorcode = scryptdec_buf((uint8_t *) PyString_AsString((PyObject *) input), inputlen,
                               outbuf, &outputlen,
                               (uint8_t *) PyString_AsString((PyObject *) password), passwordlen,
-                              0, 0, maxtime);
+                              maxmem, maxmemfrac, maxtime);
 		Py_END_ALLOW_THREADS;
 
 		Py_DECREF(password);
@@ -119,7 +131,7 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args) {
     
     PyObject *value = NULL;
     if (errorcode != 0) {
-        PyErr_Format(ScryptError, "%s", errorCodes[errorcode]);
+        PyErr_Format(ScryptError, "%s", g_error_codes[errorcode]);
     } else {
         value = Py_BuildValue("z#", outbuf, outputlen);
     }
@@ -128,8 +140,10 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args) {
 }
 
 static PyMethodDef ScryptMethods[] = {
-    { "encrypt", scrypt_encrypt, METH_VARARGS, "encrypt(input, password, maxtime): str; encrypt a string" },
-    { "decrypt", scrypt_decrypt, METH_VARARGS, "decrypt(input, password, maxtime): str; decrypt a string" },
+    { "encrypt", (PyCFunction) scrypt_encrypt, METH_VARARGS | METH_KEYWORDS,
+			"encrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; encrypt a string" },
+    { "decrypt", (PyCFunction) scrypt_decrypt, METH_VARARGS | METH_KEYWORDS,
+			"decrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; decrypt a string" },
     { NULL, NULL, 0, NULL }
 };
 
