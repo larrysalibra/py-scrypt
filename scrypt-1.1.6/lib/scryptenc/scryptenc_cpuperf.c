@@ -38,6 +38,11 @@
 
 #include "scryptenc_cpuperf.h"
 
+struct timespec {
+       time_t tv_sec;
+       long tv_nsec;
+};
+
 #ifdef HAVE_CLOCK_GETTIME
 
 static clock_t clocktouse;
@@ -175,7 +180,7 @@ scryptenc_cpuperf(double * opps)
 	} while (1);
 
 #ifdef DEBUG
-	fprintf(stderr, "%ju salsa20/8 cores performed in %f seconds\n",
+	fprintf(stderr, "%u salsa20/8 cores performed in %f seconds\n",
 	    (uintmax_t)i, diffd);
 #endif
 

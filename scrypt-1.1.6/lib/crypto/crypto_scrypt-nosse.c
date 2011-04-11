@@ -29,7 +29,10 @@
 #include "scrypt_platform.h"
 
 #include <sys/types.h>
+
+#ifndef _WIN32
 #include <sys/mman.h>
+#endif
 
 #include <errno.h>
 #include <stdint.h>
@@ -266,6 +269,10 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
 	}
 
 	/* Allocate memory. */
+#ifdef _WIN32
+#undef HAVE_POSIX_MEMALIGN
+#endif
+
 #ifdef HAVE_POSIX_MEMALIGN
 	if ((errno = posix_memalign(&B0, 64, 128 * r * p)) != 0)
 		goto err0;

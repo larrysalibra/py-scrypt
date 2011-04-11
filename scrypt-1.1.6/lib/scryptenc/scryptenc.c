@@ -46,6 +46,11 @@
 
 #include "scryptenc.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#include <Wincrypt.h>
+#endif
+
 #define ENCBLOCK 65536
 
 static int pickparams(size_t, double, double,
@@ -85,7 +90,7 @@ pickparams(size_t maxmem, double maxmemfrac, double maxtime,
 	 * opslimit imposes the stronger limit on N.
 	 */
 #ifdef DEBUG
-	fprintf(stderr, "Requiring 128Nr <= %zu, 4Nrp <= %f\n",
+	fprintf(stderr, "Requiring 128Nr <= %u, 4Nrp <= %f\n",
 	    memlimit, opslimit);
 #endif
 	if (opslimit < memlimit/32) {
@@ -112,7 +117,7 @@ pickparams(size_t maxmem, double maxmemfrac, double maxtime,
 	}
 
 #ifdef DEBUG
-	fprintf(stderr, "N = %zu r = %d p = %d\n",
+	fprintf(stderr, "N = %u r = %d p = %d\n",
 	    (size_t)(1) << *logN, (int)(*r), (int)(*p));
 #endif
 
@@ -164,6 +169,7 @@ getsalt(uint8_t salt[32])
 	uint8_t * buf = salt;
 	size_t buflen = 32;
 
+#ifndef _WIN32
 	/* Open /dev/urandom. */
 	if ((fd = open("/dev/urandom", O_RDONLY)) == -1)
 		goto err0;
@@ -196,6 +202,26 @@ err1:
 err0:
 	/* Failure! */
 	return (4);
+#endif
+    HCRYPTPROV context;
+	DWORD error;
+
+    if(CryptAcquireContext(&context, NULL, NULL, PROV_RSA_AES, 0) == NTE_BAD_KEYSET)
+    {
+		if(!CryptAcquireContext(&context, NULL, NULL, PROV_RSA_AES, CRYPT_NEWKEYSET))
+		{
+			error = GetLastError();
+			printf("%x", error);
+			return (14);
+		}
+	}
+
+    if(CryptGenRandom(context, 32, buf))
+    {
+        buf += 32;
+        return (0);
+    }
+    else{return(15);}
 }
 
 static int

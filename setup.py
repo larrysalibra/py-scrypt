@@ -14,6 +14,10 @@ if sys.platform == 'linux2':
                      ('HAVE_SYS_SYSINFO_H', '1'),
                      ('_FILE_OFFSET_BITS', '64')]
     libraries = ['crypto', 'rt']
+elif sys.platform == 'win32':
+    define_macros = []
+    library_dirs = ['c:\OpenSSL-Win32\lib\MinGW']
+    libraries = ['eay32']
 else:
     define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
     libraries = ['crypto']
@@ -33,7 +37,8 @@ scrypt_module = Extension('scrypt',
                                         'scrypt-1.1.6/lib/scryptenc',
                                         'scrypt-1.1.6/lib/crypto',
                                         'scrypt-1.1.6/lib/util'],
-                          define_macros=[('HAVE_CONFIG_H', None)] + define_macros,
+                          define_macros=[('HAVE_CONFIG_H', None)] + define_macros, 
+                          library_dirs=library_dirs,
                           libraries=libraries)
 
 setup(name='scrypt',
