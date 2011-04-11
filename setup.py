@@ -18,6 +18,7 @@ elif sys.platform == 'win32':
     define_macros = []
     library_dirs = ['c:\OpenSSL-Win32\lib\MinGW']
     libraries = ['eay32']
+    includes = ['c:\OpenSSL-Win32\include']
 else:
     define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
     libraries = ['crypto']
@@ -36,7 +37,7 @@ scrypt_module = Extension('scrypt',
                                         'scrypt-1.1.6/lib',
                                         'scrypt-1.1.6/lib/scryptenc',
                                         'scrypt-1.1.6/lib/crypto',
-                                        'scrypt-1.1.6/lib/util'],
+                                        'scrypt-1.1.6/lib/util'] + includes,
                           define_macros=[('HAVE_CONFIG_H', None)] + define_macros, 
                           library_dirs=library_dirs,
                           libraries=libraries)
