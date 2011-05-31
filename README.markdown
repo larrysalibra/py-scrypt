@@ -84,3 +84,4 @@ This library is licensed under the same license as scrypt; 2-clause BSD.
 
 [scrypt]: http://www.tarsnap.com/scrypt.html
 [Python]: http://python.org
+[Burstaholic]: https://bitbucket.org/Burstaholic
