@@ -202,7 +202,7 @@ err1:
 err0:
 	/* Failure! */
 	return (4);
-#endif
+#else
     HCRYPTPROV context;
 	DWORD error;
 
@@ -222,6 +222,7 @@ err0:
         return (0);
     }
     else{return(15);}
+#endif
 }
 
 static int

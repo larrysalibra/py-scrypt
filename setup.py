@@ -4,6 +4,9 @@ from distutils.core import setup, Extension
 import sys
 import platform
 
+includes = []
+library_dirs = []
+
 if sys.platform == 'linux2':
     define_macros = [('HAVE_CLOCK_GETTIME', '1'),
                      ('HAVE_LIBRT', '1'),

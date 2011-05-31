@@ -38,10 +38,12 @@
 
 #include "scryptenc_cpuperf.h"
 
+#ifdef _WIN32
 struct timespec {
        time_t tv_sec;
        long tv_nsec;
 };
+#endif
 
 #ifdef HAVE_CLOCK_GETTIME
 
