@@ -74,6 +74,9 @@ Since scrypt does not normally build as a shared library, I have included
 the source for the currently latest version of the library in this
 repository. When a new version arrives, I will update these sources.
 
+[Burstaholic][] on Bitbucket provided the necessary changes to make
+the library build on Windows.
+
 License
 -------
 
