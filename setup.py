@@ -51,4 +51,11 @@ setup(name='scrypt',
       author='Magnus Hallin',
       author_email='mhallin@gmail.com',
       url='http://bitbucket.org/mhallin/py-scrypt',
-      ext_modules=[scrypt_module])
+      ext_modules=[scrypt_module],
+      classifiers=['Development Status :: 4 - Beta',
+                   'Programming Language :: Python :: 2',
+                   'Programming Language :: Python :: 3',
+                   'Topic :: Security :: Cryptography',
+                   'Topic :: Software Development :: Libraries'],
+      license='2-clause BSD',
+      long_description=open('README.markdown').read())
