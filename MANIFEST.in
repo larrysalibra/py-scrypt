@@ -1,1 +1,2 @@
 recursive-include scrypt-1.1.6 *.h
+include README.markdown
