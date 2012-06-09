@@ -7,9 +7,10 @@ import platform
 includes = []
 library_dirs = []
 
-if sys.platform == 'linux2':
+if sys.platform.startswith('linux'):
     define_macros = [('HAVE_CLOCK_GETTIME', '1'),
                      ('HAVE_LIBRT', '1'),
+                     ('HAVE_POSIX_MEMALIGN', '1'),
                      ('HAVE_STRUCT_SYSINFO', '1'),
                      ('HAVE_STRUCT_SYSINFO_MEM_UNIT', '1'),
                      ('HAVE_STRUCT_SYSINFO_TOTALRAM', '1'),
@@ -17,13 +18,17 @@ if sys.platform == 'linux2':
                      ('HAVE_SYS_SYSINFO_H', '1'),
                      ('_FILE_OFFSET_BITS', '64')]
     libraries = ['crypto', 'rt']
-elif sys.platform == 'win32':
+elif sys.platform.startswith('win32'):
     define_macros = []
     library_dirs = ['c:\OpenSSL-Win32\lib\MinGW']
     libraries = ['eay32']
     includes = ['c:\OpenSSL-Win32\include']
-else:
+elif sys.platform.startswith('darwin') and platform.mac_ver()[0] < '10.6':
     define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
+    libraries = ['crypto']
+else:
+    define_macros = [('HAVE_POSIX_MEMALIGN', '1'),
+                     ('HAVE_SYSCTL_HW_USERMEM', '1')]
     libraries = ['crypto']
 
 
