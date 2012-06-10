@@ -56,35 +56,35 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args, PyObject *kwargs
     PyStringObject *input, *password;
     int inputlen, passwordlen;
     int errorcode;
-		size_t maxmem = g_maxmem_default;
-		double maxmemfrac = g_maxmemfrac_default;
+    size_t maxmem = g_maxmem_default;
+    double maxmemfrac = g_maxmemfrac_default;
     double maxtime = g_maxtime_default;
     uint8_t *outbuf;
-    
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|dnd", g_kwlist,
-																		 &input, &password,
-																		 &maxtime, &maxmem, &maxmemfrac)) {
+                                     &input, &password,
+                                     &maxtime, &maxmem, &maxmemfrac)) {
         return NULL;
     }
 
-		Py_INCREF(input);
-		Py_INCREF(password);
-    
+    Py_INCREF(input);
+    Py_INCREF(password);
+
     inputlen = PyString_Size((PyObject*) input);
     passwordlen = PyString_Size((PyObject*) password);
-    
+
     outbuf = PyMem_Malloc(inputlen+129);
 
-		Py_BEGIN_ALLOW_THREADS;
-    errorcode = scryptenc_buf((uint8_t *) PyString_AsString((PyObject*) input), inputlen, 
-                              outbuf, 
+    Py_BEGIN_ALLOW_THREADS;
+    errorcode = scryptenc_buf((uint8_t *) PyString_AsString((PyObject*) input), inputlen,
+                              outbuf,
                               (uint8_t *) PyString_AsString((PyObject*) password), passwordlen,
                               maxmem, maxmemfrac, maxtime);
-		Py_END_ALLOW_THREADS;
+    Py_END_ALLOW_THREADS;
 
-		Py_DECREF(password);
-		Py_DECREF(input);
-		
+    Py_DECREF(password);
+    Py_DECREF(input);
+
     PyObject *value = NULL;
     if (errorcode != 0) {
         PyErr_Format(ScryptError, "%s", g_error_codes[errorcode]);
@@ -93,7 +93,7 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args, PyObject *kwargs
         value = Py_BuildValue("z#", outbuf, inputlen+128);
     }
     PyMem_Free(outbuf);
-    
+
     return value;
 }
 
@@ -101,35 +101,35 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args, PyObject* kwargs
     PyStringObject *input, *password;
     size_t inputlen, outputlen, passwordlen;
     int errorcode;
-		size_t maxmem = g_maxmem_default;
-		double maxmemfrac = g_maxmemfrac_default;
+    size_t maxmem = g_maxmem_default;
+    double maxmemfrac = g_maxmemfrac_default;
     double maxtime = g_maxtime_default;
     uint8_t *outbuf;
-    
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|dnd", g_kwlist,
-																		 &input, &password,
-																		 &maxtime, &maxmem, &maxmemfrac)) {
+                                     &input, &password,
+                                     &maxtime, &maxmem, &maxmemfrac)) {
         return NULL;
     }
 
-		Py_INCREF(input);
-		Py_INCREF(password);
-    
+    Py_INCREF(input);
+    Py_INCREF(password);
+
     inputlen = PyString_Size((PyObject*) input);
     passwordlen = PyString_Size((PyObject*) password);
-    
+
     outbuf = PyMem_Malloc(inputlen);
 
-		Py_BEGIN_ALLOW_THREADS;
+    Py_BEGIN_ALLOW_THREADS;
     errorcode = scryptdec_buf((uint8_t *) PyString_AsString((PyObject *) input), inputlen,
                               outbuf, &outputlen,
                               (uint8_t *) PyString_AsString((PyObject *) password), passwordlen,
                               maxmem, maxmemfrac, maxtime);
-		Py_END_ALLOW_THREADS;
+    Py_END_ALLOW_THREADS;
 
-		Py_DECREF(password);
-		Py_DECREF(input);
-    
+    Py_DECREF(password);
+    Py_DECREF(input);
+
     PyObject *value = NULL;
     if (errorcode != 0) {
         PyErr_Format(ScryptError, "%s", g_error_codes[errorcode]);
@@ -154,8 +154,8 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
 
     // note, this assumes uint32_t is unsigned long (k)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|Kkk", g2_kwlist,
-                                                    &password, &salt,
-                                                    &N, &r, &p)) {
+                                                             &password, &salt,
+                                                             &N, &r, &p)) {
         return NULL;
     }
 
@@ -180,7 +180,7 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
                                   N, r, p,
                                   outbuf, outbuflen);
     }
-   
+
     Py_END_ALLOW_THREADS;
 
     Py_DECREF(password);
@@ -203,21 +203,21 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
 
 static PyMethodDef ScryptMethods[] = {
     { "encrypt", (PyCFunction) scrypt_encrypt, METH_VARARGS | METH_KEYWORDS,
-			"encrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; encrypt a string" },
+      "encrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; encrypt a string" },
     { "decrypt", (PyCFunction) scrypt_decrypt, METH_VARARGS | METH_KEYWORDS,
-			"decrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; decrypt a string" },
+      "decrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; decrypt a string" },
     { "hash", (PyCFunction) scrypt_hash, METH_VARARGS | METH_KEYWORDS,
-			"hash(password, salt, N=2**14, r=8, p=1): str; compute a 64-byte scrypt hash" },
+      "hash(password, salt, N=2**14, r=8, p=1): str; compute a 64-byte scrypt hash" },
     { NULL, NULL, 0, NULL }
 };
 
 PyMODINIT_FUNC initscrypt(void) {
     PyObject *m = Py_InitModule("scrypt", ScryptMethods);
-    
+
     if (m == NULL) {
         return;
     }
-    
+
     ScryptError = PyErr_NewException("scrypt.error", NULL, NULL);
     Py_INCREF(ScryptError);
     PyModule_AddObject(m, "error", ScryptError);
