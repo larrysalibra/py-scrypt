@@ -32,7 +32,7 @@ else:
     libraries = ['crypto']
 
 
-scrypt_module = Extension('scrypt', 
+scrypt_module = Extension('scrypt',
                           sources=['src/scrypt{0}.c'.format(platform.python_version_tuple()[0]),
                                    'scrypt-1.1.6/lib/crypto/crypto_aesctr.c',
                                    'scrypt-1.1.6/lib/crypto/crypto_scrypt-nosse.c',
@@ -46,12 +46,12 @@ scrypt_module = Extension('scrypt',
                                         'scrypt-1.1.6/lib/scryptenc',
                                         'scrypt-1.1.6/lib/crypto',
                                         'scrypt-1.1.6/lib/util'] + includes,
-                          define_macros=[('HAVE_CONFIG_H', None)] + define_macros, 
+                          define_macros=[('HAVE_CONFIG_H', None)] + define_macros,
                           library_dirs=library_dirs,
                           libraries=libraries)
 
 setup(name='scrypt',
-      version='0.5.3',
+      version='0.5.4',
       description='Bindings for the scrypt key derivation function library',
       author='Magnus Hallin',
       author_email='mhallin@gmail.com',
