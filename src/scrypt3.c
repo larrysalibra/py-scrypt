@@ -49,15 +49,17 @@ static const char *g_error_codes[] = {
 static char *g_kwlist[] = {"input", "password", "maxtime", "maxmem", "maxmemfrac", NULL};
 static const size_t g_maxmem_default = 0;
 static const double g_maxmemfrac_default = 0.5;
+static const double g_maxmemfrac_default_enc = 0.125;
 static const double g_maxtime_default = 300.0;
+static const double g_maxtime_default_enc = 5.0;
 
 static PyObject *scrypt_encrypt(PyObject *self, PyObject *args, PyObject *kwargs) {
     const char *input, *password;
     int inputlen, passwordlen;
     int errorcode;
     size_t maxmem = g_maxmem_default;
-    double maxmemfrac = g_maxmemfrac_default;
-    double maxtime = g_maxtime_default;
+    double maxmemfrac = g_maxmemfrac_default_enc;
+    double maxtime = g_maxtime_default_enc;
     uint8_t *outbuf;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#s#|dnd", g_kwlist,
