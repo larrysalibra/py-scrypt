@@ -177,9 +177,9 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
 
 static PyMethodDef ScryptMethods[] = {
     { "encrypt", (PyCFunction) scrypt_encrypt, METH_VARARGS | METH_KEYWORDS,
-      "encrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; encrypt a string" },
+      "encrypt(input, password, maxtime=5.0, maxmem=0, maxmemfrac=0.125): str; encrypt a string" },
     { "decrypt", (PyCFunction) scrypt_decrypt, METH_VARARGS | METH_KEYWORDS,
-      "decrypt(input, password, maxtime=300, maxmem=0, maxmemfrac=0.5): str; decrypt a string" },
+      "decrypt(input, password, maxtime=300.0, maxmem=0, maxmemfrac=0.5): str; decrypt a string" },
     { "hash", (PyCFunction) scrypt_hash, METH_VARARGS | METH_KEYWORDS,
       "hash(password, salt, N=2**14, r=8, p=1): str; compute a 64-byte scrypt hash" },
     { NULL, NULL, 0, NULL }
