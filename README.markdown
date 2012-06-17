@@ -1,7 +1,7 @@
 Python [scrypt][] bindings
 ==========================
 
-This is a set of [Python][] bindings for the [scrypt][] key derivation function. 
+This is a set of [Python][] bindings for the [scrypt][] key derivation function.
 
 Scrypt is useful when encrypting password as it is possible to specify a
 **minimum** amount of time to use when encrypting and decrypting. If, for
@@ -17,7 +17,7 @@ Installation
     $ hg clone http://bitbucket.org/mhallin/py-scrypt
     $ cd py-scrypt
     $ python setup.py build
-    
+
     Become superuser (or use virtualenv):
     # python setup.py install
 
@@ -76,6 +76,10 @@ repository. When a new version arrives, I will update these sources.
 
 [Burstaholic][] on Bitbucket provided the necessary changes to make
 the library build on Windows.
+
+[Kelvin Wong][] on Bitbucket provided changes to make the library available
+on Mac OS X 10.6 and earlier, as well as changes to make the library
+work more like the command-line version of scrypt by default.
 
 License
 -------
