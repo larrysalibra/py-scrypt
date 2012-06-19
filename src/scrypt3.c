@@ -154,8 +154,8 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
         hasherror = 0;
     } else {
         paramerror = 0;
-        hasherror = crypto_scrypt(password, passwordlen,
-                                  salt,     saltlen,
+        hasherror = crypto_scrypt((const uint8_t *) password, passwordlen,
+                                  (const uint8_t *) salt,     saltlen,
                                   N, r, p,
                                   outbuf, outbuflen);
     }
