@@ -175,6 +175,7 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
 
     if ( r * p >= (1 << 30) || N <= 1 || (N & (N-1)) != 0) {
         paramerror = -1;
+        hasherror = 0;
     } else {
         paramerror = 0;
         hasherror = crypto_scrypt((uint8_t *) PyString_AsString((PyObject *) password), passwordlen,
