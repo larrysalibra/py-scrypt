@@ -27,6 +27,7 @@
 #include <Python.h>
 
 #include "scryptenc/scryptenc.h"
+#include "crypto/crypto_scrypt.h"
 
 static PyObject *ScryptError;
 
