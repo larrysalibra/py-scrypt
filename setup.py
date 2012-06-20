@@ -6,6 +6,7 @@ import platform
 
 includes = []
 library_dirs = []
+CFLAGS = []
 
 if sys.platform.startswith('linux'):
     define_macros = [('HAVE_CLOCK_GETTIME', '1'),
@@ -18,6 +19,7 @@ if sys.platform.startswith('linux'):
                      ('HAVE_SYS_SYSINFO_H', '1'),
                      ('_FILE_OFFSET_BITS', '64')]
     libraries = ['crypto', 'rt']
+    CFLAGS.append('-O0')
 elif sys.platform.startswith('win32'):
     define_macros = []
     library_dirs = ['c:\OpenSSL-Win32\lib\MinGW']
@@ -47,6 +49,7 @@ scrypt_module = Extension('scrypt',
                                         'scrypt-1.1.6/lib/crypto',
                                         'scrypt-1.1.6/lib/util'] + includes,
                           define_macros=[('HAVE_CONFIG_H', None)] + define_macros,
+                          extra_compile_args=CFLAGS,
                           library_dirs=library_dirs,
                           libraries=libraries)
 
