@@ -144,17 +144,16 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args, PyObject* kwargs
 
 static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
     PyStringObject *password,   *salt;
-    size_t          passwordlen, saltlen;
+    int passwordlen, saltlen;
     int paramerror, hasherror;
-    uint64_t N = 1 << 14;
-    uint32_t r = 8;
-    uint32_t p = 1;
-    uint8_t *outbuf;
-    size_t   outbuflen;
+    unsigned long long int N = 1 << 14;
+    unsigned long int r = 8;
+    unsigned long int p = 1;
+    unsigned char *outbuf;
+    int outbuflen;
 
     static char *g2_kwlist[] = {"password", "salt", "N", "r", "p", NULL};
 
-    // note, this assumes uint32_t is unsigned long (k)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|Kkk", g2_kwlist,
                                                              &password, &salt,
                                                              &N, &r, &p)) {
@@ -178,10 +177,10 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
         hasherror = 0;
     } else {
         paramerror = 0;
-        hasherror = crypto_scrypt((uint8_t *) PyString_AsString((PyObject *) password), passwordlen,
-                                  (uint8_t *) PyString_AsString((PyObject *) salt),     saltlen,
-                                  N, r, p,
-                                  outbuf, outbuflen);
+        hasherror = crypto_scrypt((const uint8_t *) PyString_AsString((PyObject *) password), (size_t) passwordlen,
+                                  (const uint8_t *) PyString_AsString((PyObject *) salt),     (size_t) saltlen,
+                                  (uint64_t) N, (uint32_t) r, (uint32_t) p,
+                                  (uint8_t *) outbuf, (size_t) outbuflen);
     }
 
     Py_END_ALLOW_THREADS;

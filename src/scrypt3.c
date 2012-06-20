@@ -24,6 +24,10 @@
  * SUCH DAMAGE.
  */
 
+#ifdef PY_SSIZE_T_CLEAN
+#define PY_SSIZE_T_CLEAN
+#endif
+
 #include <Python.h>
 
 #include "scryptenc/scryptenc.h"
@@ -125,18 +129,17 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args, PyObject *kwargs
     return value;
 }
 static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
-    const char *password,   *salt;
-    int      passwordlen, saltlen;
+    const char *password, *salt;
+    Py_ssize_t passwordlen, saltlen;
     int paramerror, hasherror;
-    uint64_t N = 1 << 14;
-    uint32_t r = 8;
-    uint32_t p = 1;
-    uint8_t *outbuf;
-    size_t   outbuflen;
+    unsigned PY_LONG_LONG N = 1 << 14;
+    unsigned long r = 8;
+    unsigned long p = 1;
+    unsigned char *outbuf;
+    int outbuflen;
 
     static char *g2_kwlist[] = {"password", "salt", "N", "r", "p", NULL};
 
-    // note, this assumes uint32_t is unsigned long (k)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#s#|Kkk", g2_kwlist,
                                      &password, &passwordlen, &salt, &saltlen,
                                      &N, &r, &p)) {
@@ -154,10 +157,10 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
         hasherror = 0;
     } else {
         paramerror = 0;
-        hasherror = crypto_scrypt((const uint8_t *) password, passwordlen,
-                                  (const uint8_t *) salt,     saltlen,
-                                  N, r, p,
-                                  outbuf, outbuflen);
+        hasherror = crypto_scrypt((const uint8_t *) password, (size_t) passwordlen,
+                                  (const uint8_t *) salt,     (size_t) saltlen,
+                                  (uint64_t) N, (uint32_t) r, (uint32_t) p,
+                                  (uint8_t *) outbuf, (size_t) outbuflen);
     }
 
     Py_END_ALLOW_THREADS;
