@@ -1,12 +1,44 @@
 #!/usr/bin/env python
-from distutils.core import setup, Extension
+from distutils.core import setup, Extension, Command
 
 import sys
 import platform
 
 includes = []
 library_dirs = []
+cmdclasses = dict()
 CFLAGS = []
+
+
+class Tester(Command):
+    """Runs unit tests"""
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        if ((sys.version_info > (3, 2, 0, 'final', 0)) or
+            (sys.version_info > (2, 7, 0, 'final', 0) and sys.version_info < (3, 0, 0, 'final', 0))):
+            from unittest import TextTestRunner, defaultTestLoader
+        else:
+            try:
+                from unittest2 import TextTestRunner, defaultTestLoader
+            except ImportError:
+                print("Please install unittest2 to run the test suite")
+                exit(-1)
+        from tests import test_scrypt, test_scrypt_py2x, test_scrypt_py3x
+        suite = defaultTestLoader.loadTestsFromModule(test_scrypt)
+        suite.addTests(defaultTestLoader.loadTestsFromModule(test_scrypt_py2x))
+        suite.addTests(defaultTestLoader.loadTestsFromModule(test_scrypt_py3x))
+        runner = TextTestRunner(verbosity=2)
+        result = runner.run(suite)
+
+cmdclasses['test'] = Tester
 
 if sys.platform.startswith('linux'):
     define_macros = [('HAVE_CLOCK_GETTIME', '1'),
@@ -61,9 +93,13 @@ setup(name='scrypt',
       url='http://bitbucket.org/mhallin/py-scrypt',
       ext_modules=[scrypt_module],
       classifiers=['Development Status :: 4 - Beta',
-                   'Programming Language :: Python :: 2',
+                   'Intended Audience :: Developers',
+                   'License :: OSI Approved :: BSD License',
+                   'Programming Language :: Python :: 2.6',
+                   'Programming Language :: Python :: 2.7',
                    'Programming Language :: Python :: 3',
                    'Topic :: Security :: Cryptography',
                    'Topic :: Software Development :: Libraries'],
       license='2-clause BSD',
-      long_description=open('README.markdown').read())
+      long_description=open('README.markdown').read(),
+      cmdclass=cmdclasses)

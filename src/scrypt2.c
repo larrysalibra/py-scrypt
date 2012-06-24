@@ -66,6 +66,7 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args, PyObject *kwargs
     double maxmemfrac = g_maxmemfrac_default_enc;
     double maxtime = g_maxtime_default_enc;
     uint8_t *outbuf;
+    PyObject *value = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|dnd", g_kwlist,
                                      &input, &password,
@@ -91,7 +92,6 @@ static PyObject *scrypt_encrypt(PyObject *self, PyObject *args, PyObject *kwargs
     Py_DECREF(password);
     Py_DECREF(input);
 
-    PyObject *value = NULL;
     if (errorcode != 0) {
         PyErr_Format(ScryptError, "%s", g_error_codes[errorcode]);
         PyErr_SetNone(ScryptError);
@@ -111,6 +111,7 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args, PyObject* kwargs
     double maxmemfrac = g_maxmemfrac_default;
     double maxtime = g_maxtime_default;
     uint8_t *outbuf;
+    PyObject *value = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "SS|dnd", g_kwlist,
                                      &input, &password,
@@ -136,7 +137,6 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args, PyObject* kwargs
     Py_DECREF(password);
     Py_DECREF(input);
 
-    PyObject *value = NULL;
     if (errorcode != 0) {
         PyErr_Format(ScryptError, "%s", g_error_codes[errorcode]);
     } else {
@@ -155,6 +155,7 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
     unsigned long int p = 1;
     unsigned char *outbuf;
     int outbuflen;
+    PyObject *value = NULL;
 
     static char *g2_kwlist[] = {"password", "salt", "N", "r", "p", NULL};
 
@@ -176,7 +177,7 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
 
     Py_BEGIN_ALLOW_THREADS;
 
-    if ( r * p >= (1 << 30) || N <= 1 || (N & (N-1)) != 0) {
+    if ( r * p >= (1 << 30) || r < 1 || p < 1 || N <= 1 || (N & (N-1)) != 0) {
         paramerror = -1;
         hasherror = 0;
     } else {
@@ -192,7 +193,6 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
     Py_DECREF(password);
     Py_DECREF(salt);
 
-    PyObject *value = NULL;
     if (paramerror != 0) {
         PyErr_Format(ScryptError, "%s",
             "hash parameters are wrong (r*p should be < 2**30, and N should be a power of two > 1)");
