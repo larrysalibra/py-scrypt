@@ -27,6 +27,8 @@ class TestScrypt(testm.TestCase):
         self.input = "message"
         self.password = "password"
         self.longinput = str(urandom(100000))
+        self.five_minutes = 300
+        self.five_seconds = 5
         self.one_byte = 1  # in Bytes
         self.one_megabyte = 1024 * 1024  # in Bytes
         self.ten_megabytes = 10 * self.one_megabyte
@@ -148,7 +150,7 @@ class TestScrypt(testm.TestCase):
 
     def test_decrypt_maxtime_positional(self):
         """Test decrypt function accepts third positional argument"""
-        m = scrypt.decrypt(self.ciphertext, self.password, 1.0)
+        m = scrypt.decrypt(self.ciphertext, self.password, self.five_seconds)
         self.assertEqual(m, self.input)
 
     def test_decrypt_maxtime_keyword_argument(self):
@@ -158,7 +160,7 @@ class TestScrypt(testm.TestCase):
 
     def test_decrypt_maxmem_positional(self):
         """Test decrypt function accepts fourth positional argument"""
-        m = scrypt.decrypt(self.ciphertext, self.password, 0.1, self.ten_megabytes)
+        m = scrypt.decrypt(self.ciphertext, self.password, self.five_minutes, self.ten_megabytes)
         self.assertEqual(m, self.input)
 
     def test_decrypt_maxmem_keyword_argument(self):
@@ -168,7 +170,7 @@ class TestScrypt(testm.TestCase):
 
     def test_decrypt_maxmemfrac_positional(self):
         """Test decrypt function accepts maxmem keyword argument"""
-        m = scrypt.decrypt(self.ciphertext, self.password, 0.1, self.one_megabyte, 0.0625)
+        m = scrypt.decrypt(self.ciphertext, self.password, self.five_minutes, self.one_megabyte, 0.0625)
         self.assertEqual(m, self.input)
 
     def test_decrypt_maxmemfrac_keyword_argument(self):
