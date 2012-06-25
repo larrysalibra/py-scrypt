@@ -27,8 +27,8 @@ class TestScrypt(testm.TestCase):
         self.input = "message"
         self.password = "password"
         self.longinput = str(urandom(100000))
-        self.five_minutes = 300
-        self.five_seconds = 5
+        self.five_minutes = 300.0
+        self.five_seconds = 5.0
         self.one_byte = 1  # in Bytes
         self.one_megabyte = 1024 * 1024  # in Bytes
         self.ten_megabytes = 10 * self.one_megabyte

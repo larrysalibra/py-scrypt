@@ -35,7 +35,7 @@ class Tester(Command):
         suite = defaultTestLoader.loadTestsFromModule(test_scrypt)
         suite.addTests(defaultTestLoader.loadTestsFromModule(test_scrypt_py2x))
         suite.addTests(defaultTestLoader.loadTestsFromModule(test_scrypt_py3x))
-        runner = TextTestRunner(verbosity=2)
+        runner = TextTestRunner()
         result = runner.run(suite)
 
 cmdclasses['test'] = Tester
