@@ -22,7 +22,7 @@ Installation
     # python setup.py install
 
     Run tests after install:
-    $ python tests/scrypt-tests.py
+    $ python setup.py test
 
 
 If you want py-scrypt for your Python 3 environment, just run the
