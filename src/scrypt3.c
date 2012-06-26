@@ -24,9 +24,6 @@
  * SUCH DAMAGE.
  */
 
-#ifdef PY_SSIZE_T_CLEAN
-#define PY_SSIZE_T_CLEAN
-#endif
 
 #include <Python.h>
 
@@ -130,7 +127,7 @@ static PyObject *scrypt_decrypt(PyObject *self, PyObject *args, PyObject *kwargs
 }
 static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
     const char *password, *salt;
-    Py_ssize_t passwordlen, saltlen;
+    int passwordlen, saltlen;
     int paramerror, hasherror;
     unsigned PY_LONG_LONG N = 1 << 14;
     unsigned long r = 8;
@@ -158,8 +155,8 @@ static PyObject *scrypt_hash(PyObject *self, PyObject *args, PyObject* kwargs) {
         hasherror = 0;
     } else {
         paramerror = 0;
-        hasherror = crypto_scrypt((const uint8_t *) password, (size_t) passwordlen,
-                                  (const uint8_t *) salt,     (size_t) saltlen,
+        hasherror = crypto_scrypt((uint8_t *) password, (size_t) passwordlen,
+                                  (uint8_t *) salt,     (size_t) saltlen,
                                   (uint64_t) N, (uint32_t) r, (uint32_t) p,
                                   (uint8_t *) outbuf, (size_t) outbuflen);
     }
