@@ -51,7 +51,7 @@ if sys.platform.startswith('linux'):
                      ('HAVE_SYS_SYSINFO_H', '1'),
                      ('_FILE_OFFSET_BITS', '64')]
     libraries = ['crypto', 'rt']
-    CFLAGS.append('-O0')
+    CFLAGS.append('-O2')
 elif sys.platform.startswith('win32'):
     define_macros = []
     library_dirs = ['c:\OpenSSL-Win32\lib\MinGW']
