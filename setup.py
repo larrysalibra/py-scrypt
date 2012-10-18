@@ -64,8 +64,6 @@ else:
     define_macros = [('HAVE_POSIX_MEMALIGN', '1'),
                      ('HAVE_SYSCTL_HW_USERMEM', '1')]
     libraries = ['crypto']
-    CFLAGS.append('-O0')
-
 
 scrypt_module = Extension('_scrypt',
                           sources=['src/scrypt.c',
@@ -91,7 +89,7 @@ setup(name='scrypt',
       description='Bindings for the scrypt key derivation function library',
       author='Magnus Hallin',
       author_email='mhallin@gmail.com',
-      url='http://bitbucket.org/mhaullin/py-scrypt',
+      url='http://bitbucket.org/mhallin/py-scrypt',
       py_modules=['scrypt'],
       ext_modules=[scrypt_module],
       classifiers=['Development Status :: 4 - Beta',
