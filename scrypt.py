@@ -10,7 +10,7 @@ from ctypes import (cdll,
 
 _scrypt = cdll.LoadLibrary(imp.find_module('_scrypt')[1])
 
-_scryptenc_buf = _scrypt.scryptenc_buf
+_scryptenc_buf = _scrypt.exp_scryptenc_buf
 _scryptenc_buf.argtypes = [c_char_p,  # const uint_t  *inbuf
                            c_size_t,  # size_t         inbuflen
                            c_char_p,  # uint8_t       *outbuf
@@ -22,7 +22,7 @@ _scryptenc_buf.argtypes = [c_char_p,  # const uint_t  *inbuf
                            ]
 _scryptenc_buf.restype = c_int
 
-_scryptdec_buf = _scrypt.scryptdec_buf
+_scryptdec_buf = _scrypt.exp_scryptdec_buf
 _scryptdec_buf.argtypes = [c_char_p,           # const uint8_t *inbuf
                            c_size_t,           # size_t         inbuflen
                            c_char_p,           # uint8_t       *outbuf
@@ -35,7 +35,7 @@ _scryptdec_buf.argtypes = [c_char_p,           # const uint8_t *inbuf
                            ]
 _scryptdec_buf.restype = c_int
 
-_crypto_scrypt = _scrypt.crypto_scrypt
+_crypto_scrypt = _scrypt.exp_crypto_scrypt
 _crypto_scrypt.argtypes = [c_char_p,  # const uint8_t *passwd
                            c_size_t,  # size_t         passwdlen
                            c_char_p,  # const uint8_t *salt
