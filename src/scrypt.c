@@ -26,6 +26,34 @@
 
 #include <Python.h>
 
+#include "scryptenc.h"
+#include "crypto_scrypt.h"
+
+/* Exported trampolines */
+DL_EXPORT(int) exp_scryptenc_buf(const uint8_t *inbuf, size_t inbuflen,
+                                 uint8_t *outbuf,
+                                 const uint8_t *passwd, size_t passwdlen,
+                                 size_t maxmem, double maxmemfrac, double maxtime) {
+    return scryptenc_buf(inbuf, inbuflen, outbuf, passwd, passwdlen,
+                         maxmem, maxmemfrac, maxtime);
+}
+
+DL_EXPORT(int) exp_scryptdec_buf(const uint8_t *inbuf, size_t inbuflen,
+                                 uint8_t *outbuf, size_t *outbuflen,
+                                 const uint8_t *passwd, size_t passwdlen,
+                                 size_t maxmem, double maxmemfrac, double maxtime) {
+    return scryptdec_buf(inbuf, inbuflen, outbuf, outbuflen, passwd, passwdlen,
+                         maxmem, maxmemfrac, maxtime);
+}
+
+DL_EXPORT(int) exp_crypto_scrypt(const uint8_t *passwd, size_t passwdlen,
+                                 const uint8_t *salt, size_t saltlen,
+                                 uint64_t N, uint32_t r, uint32_t p,
+                                 uint8_t *buf, size_t buflen) {
+    return crypto_scrypt(passwd, passwdlen, salt, saltlen,
+                         N, r, p, buf, buflen);
+}
+
 /*
   We need a stub init_scrypt function so the module will link as a proper module.
 
