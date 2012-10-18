@@ -141,12 +141,12 @@ def decrypt(input, password,
     return str(out_bytes, encoding)
 
 
-def hash(password, salt, N=1 << 14, r=8, p=1):
-    """hash(password, salt, N=2**14, r=8, p=1): str
+def hash(password, salt, N=1 << 14, r=8, p=1, size=64):
+    """hash(password, salt, N=2**14, r=8, p=1, size=64): str
 
-    compute a 64-byte scrypt hash"""
+    compute a scrypt hash of user-selectable length (64 by default)"""
 
-    outbuf = create_string_buffer(64)
+    outbuf = create_string_buffer(size)
 
     if not IS_PY2 and isinstance(password, str):
         password = bytes(password, 'utf-8')
@@ -159,7 +159,7 @@ def hash(password, salt, N=1 << 14, r=8, p=1):
     result = _crypto_scrypt(password, len(password),
                             salt, len(salt),
                             N, r, p,
-                            outbuf, 64)
+                            outbuf, size)
 
     if result:
         raise error('could not compute hash')

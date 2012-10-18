@@ -207,6 +207,13 @@ class TestScryptHash(testm.TestCase):
             hhex = b2a_hex(h)
             self.assertEqual(hhex, bytes(row[5].encode("utf-8")))
 
+    def test_hash_size_keyword(self):
+        """Test hash takes keyword valid size"""
+        h64 = scrypt.hash(self.input, self.salt, size=64)
+        h128 = scrypt.hash(self.input, self.salt, size=128)
+        self.assertEqual(len(h64), 64)
+        self.assertEqual(len(h128), 128)
+
     def test_hash_n_positional(self):
         """Test hash accepts valid N in position 3"""
         h = scrypt.hash(self.input, self.salt, 256)
