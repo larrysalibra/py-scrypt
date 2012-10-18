@@ -29,6 +29,17 @@
 #include "scryptenc.h"
 #include "crypto_scrypt.h"
 
+#if !defined(DL_EXPORT)
+
+#if defined(HAVE_DECLSPEC_DLL)
+#define DL_EXPORT(type) __declspec(dllexport) type
+#else
+#define DL_EXPORT(type) type
+#endif
+
+#endif
+
+
 /* Exported trampolines */
 DL_EXPORT(int) exp_scryptenc_buf(const uint8_t *inbuf, size_t inbuflen,
                                  uint8_t *outbuf,
@@ -60,3 +71,4 @@ DL_EXPORT(int) exp_crypto_scrypt(const uint8_t *passwd, size_t passwdlen,
   Do not import _scrypt from python; it will not work since _scrypt is not a *real* module
 */
 PyMODINIT_FUNC init_scrypt(void) { }
+PyMODINIT_FUNC PyInit__scrypt(void) { }
