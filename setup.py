@@ -101,5 +101,5 @@ setup(name='scrypt',
                    'Topic :: Security :: Cryptography',
                    'Topic :: Software Development :: Libraries'],
       license='2-clause BSD',
-      long_description=open('README.markdown').read(),
+      long_description=open('README.rst').read(),
       cmdclass=cmdclasses)
