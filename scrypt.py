@@ -81,23 +81,43 @@ class error(Exception):
             super(error, self).__init__(scrypt_code)
 
 
+def _ensure_bytes(data):
+    if IS_PY2 and isinstance(data, unicode):
+        raise TypeError('can not encrypt/decrypt unicode objects')
+
+    if not IS_PY2 and isinstance(data, str):
+        return bytes(data, 'utf-8')
+
+    return data
+            
+
 def encrypt(input, password,
             maxtime=MAXTIME_DEFAULT_ENC,
             maxmem=MAXMEM_DEFAULT,
             maxmemfrac=MAXMEMFRAC_DEFAULT):
-    """encrypt(input, password, maxtime=5.0, maxmem=0, maxmemfrac=0.125): str
+    """
+    Encrypt a string using a password. The resulting data will have len =
+    len(input) + 128.
 
-    encrypt a string"""
+    Notes for Python 2:
+      - `input` and `password` must be str instances
+      - The result will be a str instance
 
-    if IS_PY2 and isinstance(input, unicode):
-        raise TypeError('input must be type str')
-    if IS_PY2 and isinstance(password, unicode):
-        raise TypeError('password must be type unicode')
+    Notes for Python 3:
+      - `input` and `password` can be both str and bytes. If they are str
+        instances, they will be encoded with utf-8
+      - The result will be a bytes instance
 
-    if not IS_PY2 and isinstance(input, str):
-        input = bytes(input, 'utf-8')
-    if not IS_PY2 and isinstance(password, str):
-        password = bytes(password, 'utf-8')
+    Exceptions raised:
+      - TypeError on invalid input
+      - scrypt.error if encryption failed
+
+    For more information on the `maxtime`, `maxmem`, and `maxmemfrac`
+    parameters, see the scrypt documentation.
+    """
+
+    input = _ensure_bytes(input)
+    password = _ensure_bytes(password)
 
     outbuf = create_string_buffer(len(input) + 128)
     result = _scryptenc_buf(input, len(input),
@@ -115,15 +135,34 @@ def decrypt(input, password,
             maxmem=MAXMEM_DEFAULT,
             maxmemfrac=MAXMEMFRAC_DEFAULT,
             encoding='utf-8'):
-    """decrypt(input, password, maxtime=300.0, maxmem=0, maxmemfrac=0.5): str
+    """
+    Decrypt a string using a password.
 
-    decrypt a string"""
+    Notes for Python 2:
+      - `input` and `password` must be str instances
+      - The result will be a str instance
+      - The encoding parameter is ignored
+
+    Notes for Python 3:
+      - `input` and `password` can be both str and bytes. If they are str
+        instances, they wil be encoded with utf-8. `input` *should*
+        really be a bytes instance, since that's what `encrypt` returns.
+      - The result will be a str instance encoded with `encoding`.
+        If encoding=None, the result will be a bytes instance.
+
+    Exceptions raised:
+      - TypeError on invalid input
+      - scrypt.error if decryption failed
+
+    For more information on the `maxtime`, `maxmem`, and `maxmemfrac`
+    parameters, see the scrypt documentation.
+    """
 
     outbuf = create_string_buffer(len(input))
     outbuflen = pointer(c_size_t(0))
 
-    if not IS_PY2 and isinstance(password, str):
-        password = bytes(password, 'utf-8')
+    input = _ensure_bytes(input)
+    password = _ensure_bytes(password)
 
     result = _scryptdec_buf(input, len(input),
                             outbuf, outbuflen,
@@ -141,17 +180,32 @@ def decrypt(input, password,
     return str(out_bytes, encoding)
 
 
-def hash(password, salt, N=1 << 14, r=8, p=1, size=64):
-    """hash(password, salt, N=2**14, r=8, p=1, size=64): str
+def hash(password, salt, N=1 << 14, r=8, p=1, buflen=64):
+    """
+    Compute scrypt(password, salt, N, r, p, buflen).
 
-    compute a scrypt hash of user-selectable length (64 by default)"""
+    The parameters r, p, and buflen must satisfy r * p < 2^30 and
+    buflen <= (2^32 - 1) * 32. The parameter N must be a power of 2
+    greater than 1. N, r and p must all be positive.
 
-    outbuf = create_string_buffer(size)
+    Notes for Python 2:
+      - `password` and `salt` must be str instances
+      - The result will be a str instance
 
-    if not IS_PY2 and isinstance(password, str):
-        password = bytes(password, 'utf-8')
-    if not IS_PY2 and isinstance(salt, str):
-        salt = bytes(salt, 'utf-8')
+    Notes for Python 3:
+      - `password` and `salt` can be both str and bytes. If they are str
+        instances, they wil be encoded with utf-8.
+      - The result will be a bytes instance
+
+    Exceptions raised:
+      - TypeError on invalid input
+      - scrypt.error if scrypt failed
+    """
+
+    outbuf = create_string_buffer(buflen)
+
+    password = _ensure_bytes(password)
+    salt = _ensure_bytes(salt)
 
     if r * p >= (1 << 30) or N <= 1 or (N & (N - 1)) != 0 or p < 1 or r < 1:
         raise error('hash parameters are wrong (r*p should be < 2**30, and N should be a power of two > 1)')
@@ -159,7 +213,7 @@ def hash(password, salt, N=1 << 14, r=8, p=1, size=64):
     result = _crypto_scrypt(password, len(password),
                             salt, len(salt),
                             N, r, p,
-                            outbuf, size)
+                            outbuf, buflen)
 
     if result:
         raise error('could not compute hash')
