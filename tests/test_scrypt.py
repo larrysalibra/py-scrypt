@@ -207,10 +207,10 @@ class TestScryptHash(testm.TestCase):
             hhex = b2a_hex(h)
             self.assertEqual(hhex, bytes(row[5].encode("utf-8")))
 
-    def test_hash_size_keyword(self):
-        """Test hash takes keyword valid size"""
-        h64 = scrypt.hash(self.input, self.salt, size=64)
-        h128 = scrypt.hash(self.input, self.salt, size=128)
+    def test_hash_buflen_keyword(self):
+        """Test hash takes keyword valid buflen"""
+        h64 = scrypt.hash(self.input, self.salt, buflen=64)
+        h128 = scrypt.hash(self.input, self.salt, buflen=128)
         self.assertEqual(len(h64), 64)
         self.assertEqual(len(h128), 128)
 
