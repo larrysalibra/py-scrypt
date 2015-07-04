@@ -1,5 +1,5 @@
 recursive-include scrypt-1.1.6 *.h
-include README.markdown
+include README.rst
 include src/*.c
 
 include tests/__init__.py
