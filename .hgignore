@@ -4,3 +4,4 @@ MANIFEST
 dist
 .pyc
 .so
+scrypt.egg-info
