@@ -28,7 +28,11 @@
  */
 #include "scrypt_platform.h"
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
 #include <stdint.h>
+#endif
 #include <stdlib.h>
 
 #include <openssl/aes.h>

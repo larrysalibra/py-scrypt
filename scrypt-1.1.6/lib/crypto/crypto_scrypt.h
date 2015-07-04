@@ -29,7 +29,11 @@
 #ifndef _CRYPTO_SCRYPT_H_
 #define _CRYPTO_SCRYPT_H_
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
 #include <stdint.h>
+#endif
 
 /**
  * crypto_scrypt(passwd, passwdlen, salt, saltlen, N, r, p, buf, buflen):

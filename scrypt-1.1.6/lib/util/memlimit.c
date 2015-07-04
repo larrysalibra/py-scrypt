@@ -50,9 +50,14 @@
 #include <sys/sysinfo.h>
 #endif
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
+#include <stdint.h>
+#endif
+
 #include <errno.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <unistd.h>
 
 #ifdef DEBUG
