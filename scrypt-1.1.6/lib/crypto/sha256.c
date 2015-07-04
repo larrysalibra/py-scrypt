@@ -27,7 +27,11 @@
 
 #include <sys/types.h>
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
 #include <stdint.h>
+#endif
 #include <string.h>
 
 #include "sysendian.h"

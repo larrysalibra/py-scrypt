@@ -7,6 +7,7 @@ import platform
 includes = []
 library_dirs = []
 cmdclasses = dict()
+extra_sources = []
 CFLAGS = []
 
 
@@ -53,10 +54,11 @@ if sys.platform.startswith('linux'):
     libraries = ['crypto', 'rt']
     CFLAGS.append('-O2')
 elif sys.platform.startswith('win32'):
-    define_macros = []
-    library_dirs = ['c:\OpenSSL-Win32\lib\MinGW']
-    libraries = ['eay32']
-    includes = ['c:\OpenSSL-Win32\include']
+    define_macros = [('inline', '__inline')]
+    library_dirs = ['c:\OpenSSL-Win32\lib']
+    libraries = ['libeay32', 'advapi32']
+    includes = ['c:\OpenSSL-Win32\include', 'scrypt-windows-stubs/include']
+    extra_sources = ['scrypt-windows-stubs/gettimeofday.c']
 elif sys.platform.startswith('darwin') and platform.mac_ver()[0] < '10.6':
     define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
     libraries = ['crypto']
@@ -73,7 +75,7 @@ scrypt_module = Extension('_scrypt',
                                    'scrypt-1.1.6/lib/scryptenc/scryptenc.c',
                                    'scrypt-1.1.6/lib/scryptenc/scryptenc_cpuperf.c',
                                    'scrypt-1.1.6/lib/util/memlimit.c',
-                                   'scrypt-1.1.6/lib/util/warn.c'],
+                                   'scrypt-1.1.6/lib/util/warn.c'] + extra_sources,
                           include_dirs=['scrypt-1.1.6',
                                         'scrypt-1.1.6/lib',
                                         'scrypt-1.1.6/lib/scryptenc',
@@ -85,7 +87,7 @@ scrypt_module = Extension('_scrypt',
                           libraries=libraries)
 
 setup(name='scrypt',
-      version='0.6.0',
+      version='0.7.0',
       description='Bindings for the scrypt key derivation function library',
       author='Magnus Hallin',
       author_email='mhallin@gmail.com',
@@ -95,7 +97,6 @@ setup(name='scrypt',
       classifiers=['Development Status :: 4 - Beta',
                    'Intended Audience :: Developers',
                    'License :: OSI Approved :: BSD License',
-                   'Programming Language :: Python :: 2.6',
                    'Programming Language :: Python :: 2.7',
                    'Programming Language :: Python :: 3',
                    'Topic :: Security :: Cryptography',

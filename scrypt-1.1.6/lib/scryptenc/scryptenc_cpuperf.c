@@ -30,7 +30,11 @@
 
 #include <sys/time.h>
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
 #include <stdint.h>
+#endif
 #include <stdio.h>
 #include <time.h>
 

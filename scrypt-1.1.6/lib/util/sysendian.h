@@ -42,7 +42,11 @@
 
 #else
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
 #include <stdint.h>
+#endif
 
 static inline uint32_t
 be32dec(const void *pp)

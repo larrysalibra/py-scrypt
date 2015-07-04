@@ -29,7 +29,12 @@
 #ifndef _SCRYPTENC_H_
 #define _SCRYPTENC_H_
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
 #include <stdint.h>
+#endif
+
 #include <stdio.h>
 
 /**

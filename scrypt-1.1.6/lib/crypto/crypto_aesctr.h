@@ -29,7 +29,11 @@
 #ifndef _CRYPTO_AESCTR_H_
 #define _CRYPTO_AESCTR_H_
 
+#ifdef _MSC_VER
+#include <win_stdint.h>
+#else
 #include <stdint.h>
+#endif
 
 #include <openssl/aes.h>
 
