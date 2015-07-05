@@ -67,8 +67,32 @@ DL_EXPORT(int) exp_crypto_scrypt(const uint8_t *passwd, size_t passwdlen,
 
 /*
   We need a stub init_scrypt function so the module will link as a proper module.
-
-  Do not import _scrypt from python; it will not work since _scrypt is not a *real* module
 */
-PyMODINIT_FUNC init_scrypt(void) { }
-PyMODINIT_FUNC PyInit__scrypt(void) { }
+
+static PyMethodDef scrypt_methods[] = {
+    {NULL, NULL, 0, NULL},
+};
+
+#if PY_MAJOR_VERSION == 2
+
+PyMODINIT_FUNC init_scrypt(void) {
+    Py_InitModule("_scrypt", scrypt_methods);
+}
+
+#endif
+
+#if PY_MAJOR_VERSION == 3
+
+static struct PyModuleDef scrypt_module = {
+    PyModuleDef_HEAD_INIT,
+    "_scrypt",
+    NULL,
+    -1,
+    scrypt_methods
+};
+
+PyMODINIT_FUNC PyInit__scrypt(void) {
+    return PyModule_Create(&scrypt_module);
+}
+
+#endif

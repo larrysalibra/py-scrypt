@@ -1,6 +1,7 @@
 from sys import version_info, exit
 
 from .test_scrypt import TestScrypt, TestScryptHash
+from .test_scrypt_c_module import TestScryptCModule
 from .test_scrypt_py2x import TestScryptForPython2
 from .test_scrypt_py3x import TestScryptForPy3
 
@@ -22,6 +23,7 @@ def all_tests():
 
     test_classes = [
         TestScrypt,
+        TestScryptCModule,
         TestScryptHash,
         TestScryptForPython2,
         TestScryptForPy3,

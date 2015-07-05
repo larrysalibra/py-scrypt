@@ -89,7 +89,7 @@ def _ensure_bytes(data):
         return bytes(data, 'utf-8')
 
     return data
-            
+
 
 def encrypt(input, password,
             maxtime=MAXTIME_DEFAULT_ENC,
