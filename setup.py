@@ -1,45 +1,14 @@
 #!/usr/bin/env python
-from setuptools import setup, Extension, Command
+from setuptools import setup, Extension
 
 import sys
 import platform
 
 includes = []
 library_dirs = []
-cmdclasses = dict()
 extra_sources = []
 CFLAGS = []
 
-
-class Tester(Command):
-    """Runs unit tests"""
-
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        if ((sys.version_info > (3, 2, 0, 'final', 0)) or
-            (sys.version_info > (2, 7, 0, 'final', 0) and sys.version_info < (3, 0, 0, 'final', 0))):
-            from unittest import TextTestRunner, defaultTestLoader
-        else:
-            try:
-                from unittest2 import TextTestRunner, defaultTestLoader
-            except ImportError:
-                print("Please install unittest2 to run the test suite")
-                exit(-1)
-        from tests import test_scrypt, test_scrypt_py2x, test_scrypt_py3x
-        suite = defaultTestLoader.loadTestsFromModule(test_scrypt)
-        suite.addTests(defaultTestLoader.loadTestsFromModule(test_scrypt_py2x))
-        suite.addTests(defaultTestLoader.loadTestsFromModule(test_scrypt_py3x))
-        runner = TextTestRunner()
-        result = runner.run(suite)
-
-cmdclasses['test'] = Tester
 
 if sys.platform.startswith('linux'):
     define_macros = [('HAVE_CLOCK_GETTIME', '1'),
@@ -67,24 +36,25 @@ else:
                      ('HAVE_SYSCTL_HW_USERMEM', '1')]
     libraries = ['crypto']
 
-scrypt_module = Extension('_scrypt',
-                          sources=['src/scrypt.c',
-                                   'scrypt-1.1.6/lib/crypto/crypto_aesctr.c',
-                                   'scrypt-1.1.6/lib/crypto/crypto_scrypt-nosse.c',
-                                   'scrypt-1.1.6/lib/crypto/sha256.c',
-                                   'scrypt-1.1.6/lib/scryptenc/scryptenc.c',
-                                   'scrypt-1.1.6/lib/scryptenc/scryptenc_cpuperf.c',
-                                   'scrypt-1.1.6/lib/util/memlimit.c',
-                                   'scrypt-1.1.6/lib/util/warn.c'] + extra_sources,
-                          include_dirs=['scrypt-1.1.6',
-                                        'scrypt-1.1.6/lib',
-                                        'scrypt-1.1.6/lib/scryptenc',
-                                        'scrypt-1.1.6/lib/crypto',
-                                        'scrypt-1.1.6/lib/util'] + includes,
-                          define_macros=[('HAVE_CONFIG_H', None)] + define_macros,
-                          extra_compile_args=CFLAGS,
-                          library_dirs=library_dirs,
-                          libraries=libraries)
+scrypt_module = Extension(
+    '_scrypt',
+    sources=['src/scrypt.c',
+             'scrypt-1.1.6/lib/crypto/crypto_aesctr.c',
+             'scrypt-1.1.6/lib/crypto/crypto_scrypt-nosse.c',
+             'scrypt-1.1.6/lib/crypto/sha256.c',
+             'scrypt-1.1.6/lib/scryptenc/scryptenc.c',
+             'scrypt-1.1.6/lib/scryptenc/scryptenc_cpuperf.c',
+             'scrypt-1.1.6/lib/util/memlimit.c',
+             'scrypt-1.1.6/lib/util/warn.c'] + extra_sources,
+    include_dirs=['scrypt-1.1.6',
+                  'scrypt-1.1.6/lib',
+                  'scrypt-1.1.6/lib/scryptenc',
+                  'scrypt-1.1.6/lib/crypto',
+                  'scrypt-1.1.6/lib/util'] + includes,
+    define_macros=[('HAVE_CONFIG_H', None)] + define_macros,
+    extra_compile_args=CFLAGS,
+    library_dirs=library_dirs,
+    libraries=libraries)
 
 setup(name='scrypt',
       version='0.7.0',
@@ -103,4 +73,4 @@ setup(name='scrypt',
                    'Topic :: Software Development :: Libraries'],
       license='2-clause BSD',
       long_description=open('README.rst').read(),
-      cmdclass=cmdclasses)
+      test_suite='tests.all_tests')
