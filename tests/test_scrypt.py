@@ -9,7 +9,8 @@ from binascii import a2b_hex, b2a_hex
 import scrypt
 
 if ((version_info > (3, 2, 0, 'final', 0)) or
-    (version_info > (2, 7, 0, 'final', 0) and version_info < (3, 0, 0, 'final', 0))):
+        (version_info > (2, 7, 0, 'final', 0) and
+         version_info < (3, 0, 0, 'final', 0))):
     import unittest as testm
 else:
     try:
