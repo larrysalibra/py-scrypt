@@ -65,11 +65,8 @@ Fore encryption/decryption, the library exports two functions
 From these, one can make a simple password verifier using the following
 functions::
 
-    def randstr(length):
-        return ''.join(chr(random.randint(0,255)) for i in range(length))
-
     def hash_password(password, maxtime=0.5, datalength=64):
-        return scrypt.encrypt(randstr(datalength), password, maxtime=maxtime)
+        return scrypt.encrypt(os.urandom(datalength), password, maxtime=maxtime)
 
     def verify_password(hashed_password, guessed_password, maxtime=0.5):
         try:
