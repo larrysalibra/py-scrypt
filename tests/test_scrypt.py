@@ -2,11 +2,11 @@
 
 from os import urandom
 from os.path import dirname, abspath, sep
-from sys import version_info
+from sys import version_info, exit
 from csv import reader
 from binascii import a2b_hex, b2a_hex
-import base64
-import json
+
+import scrypt
 
 if ((version_info > (3, 2, 0, 'final', 0)) or
     (version_info > (2, 7, 0, 'final', 0) and version_info < (3, 0, 0, 'final', 0))):
@@ -17,8 +17,6 @@ else:
     except ImportError:
         print("Please install unittest2 to run the test suite")
         exit(-1)
-
-import scrypt
 
 
 class TestScrypt(testm.TestCase):
