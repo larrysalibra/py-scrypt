@@ -3,6 +3,11 @@
 
 #ifdef _MSC_VER
 
+struct timespec {
+       time_t tv_sec;
+       long tv_nsec;
+};
+
 #include <winsock2.h>
 int gettimeofday(struct timeval * tp, struct timezone * tzp);
 
