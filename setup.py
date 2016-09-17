@@ -24,10 +24,16 @@ if sys.platform.startswith('linux'):
     CFLAGS.append('-O2')
 elif sys.platform.startswith('win32'):
     define_macros = [('inline', '__inline')]
-    library_dirs = ['c:\OpenSSL-Win32\lib']
     libraries = ['libeay32', 'advapi32']
-    includes = ['c:\OpenSSL-Win32\include', 'scrypt-windows-stubs/include']
     extra_sources = ['scrypt-windows-stubs/gettimeofday.c']
+
+    if platform.machine().endswith('64'):
+        library_dirs = ['c:\OpenSSL-Win64\lib']
+        includes = ['c:\OpenSSL-Win64\include', 'scrypt-windows-stubs/include']
+    else:
+        library_dirs = ['c:\OpenSSL-Win32\lib']
+        includes = ['c:\OpenSSL-Win32\include', 'scrypt-windows-stubs/include']
+
 elif sys.platform.startswith('darwin') and platform.mac_ver()[0] < '10.6':
     define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
     libraries = ['crypto']
