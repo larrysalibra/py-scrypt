@@ -107,6 +107,9 @@ platform testing and work on the ``hash`` function.
 Burstaholic_ on Bitbucket provided the necessary changes to make
 the library build on Windows.
 
+The `python-appveyor-demo`_ repository for setting up automated Windows
+builds for a multitude of Python versions.
+
 License
 =======
 
@@ -116,3 +119,4 @@ This library is licensed under the same license as scrypt; 2-clause BSD.
 .. _Python: http://python.org
 .. _Burstaholic: https://bitbucket.org/Burstaholic
 .. _Kelvin Wong: https://bitbucket.org/kelvinwong_ca
+.. _python-appveyor-demo: https://github.com/ogrisel/python-appveyor-demo
