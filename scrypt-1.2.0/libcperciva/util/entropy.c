@@ -90,7 +90,6 @@ err0:
 		if(!CryptAcquireContext(&context, NULL, NULL, PROV_RSA_AES, CRYPT_NEWKEYSET))
 		{
 			error = GetLastError();
-			printf("%x", error);
 			return (-1);
 		}
 	}
