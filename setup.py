@@ -3,6 +3,7 @@ from setuptools import setup, Extension
 
 import sys
 import platform
+import struct
 
 includes = []
 library_dirs = []
@@ -27,7 +28,7 @@ elif sys.platform.startswith('win32'):
     libraries = ['libeay32', 'advapi32']
     extra_sources = ['scrypt-windows-stubs/gettimeofday.c']
 
-    if platform.machine().endswith('64'):
+    if struct.calcsize('P') == 8:
         library_dirs = ['c:\OpenSSL-Win64\lib']
         includes = ['c:\OpenSSL-Win64\include', 'scrypt-windows-stubs/include']
     else:
