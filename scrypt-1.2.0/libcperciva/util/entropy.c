@@ -1,12 +1,7 @@
 #include <fcntl.h>
 #include <limits.h>
-#include <unistd.h>
-
-#ifdef _WIN32
-#include <win_stdint.h>
-#else
 #include <stdint.h>
-#endif
+#include <unistd.h>
 
 #include "warnp.h"
 

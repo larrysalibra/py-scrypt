@@ -202,9 +202,15 @@ typedef uint64_t  uintmax_t;
 #ifndef SIZE_MAX // [
 #  ifdef _WIN64 // [
 #     define SIZE_MAX  _UI64_MAX
-#     define SSIZE_MAX _I64_MAX
 #  else // _WIN64 ][
 #     define SIZE_MAX  _UI32_MAX
+#  endif // _WIN64 ]
+#endif // SIZE_MAX ]
+
+#ifndef SSIZE_MAX // [
+#  ifdef _WIN64 // [
+#     define SSIZE_MAX _I64_MAX
+#  else // _WIN64 ][
 #     define SSIZE_MAX _I32_MAX
 #  endif // _WIN64 ]
 #endif // SIZE_MAX ]
