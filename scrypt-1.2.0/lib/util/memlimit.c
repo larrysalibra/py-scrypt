@@ -29,7 +29,10 @@
 #include "scrypt_platform.h"
 
 #include <sys/types.h>
+
+#ifndef _WIN32
 #include <sys/resource.h>
+#endif
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
