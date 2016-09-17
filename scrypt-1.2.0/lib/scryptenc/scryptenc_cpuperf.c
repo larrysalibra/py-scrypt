@@ -30,24 +30,13 @@
 
 #include <sys/time.h>
 
-#ifdef _MSC_VER
-#include <win_stdint.h>
-#else
 #include <stdint.h>
-#endif
 #include <stdio.h>
 #include <time.h>
 
 #include "crypto_scrypt.h"
 
 #include "scryptenc_cpuperf.h"
-
-#ifdef _WIN32
-struct timespec {
-       time_t tv_sec;
-       long tv_nsec;
-};
-#endif
 
 #ifdef HAVE_CLOCK_GETTIME
 
@@ -167,7 +156,7 @@ scryptenc_cpuperf(double * opps)
 			break;
 	} while (1);
 
-	/* Could how many scryps we can do before the next tick. */
+	/* Count how many scrypts we can do before the next tick. */
 	if (getclocktime(&st))
 		return (2);
 	do {
@@ -186,7 +175,7 @@ scryptenc_cpuperf(double * opps)
 	} while (1);
 
 #ifdef DEBUG
-	fprintf(stderr, "%u salsa20/8 cores performed in %f seconds\n",
+	fprintf(stderr, "%ju salsa20/8 cores performed in %f seconds\n",
 	    (uintmax_t)i, diffd);
 #endif
 
