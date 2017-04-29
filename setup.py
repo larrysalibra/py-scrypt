@@ -37,15 +37,17 @@ elif sys.platform.startswith('win32'):
 
 elif sys.platform.startswith('darwin') and platform.mac_ver()[0] < '10.6':
     define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
-    libraries = ['crypto']
+    libraries = []
+#    libraries = ['crypto']
 else:
     define_macros = [('HAVE_POSIX_MEMALIGN', '1'),
                      ('HAVE_SYSCTL_HW_USERMEM', '1')]
-    build_static = os.environ.get("CRYPTOGRAPHY_OSX_NO_LINK_FLAGS")
+#    build_static = os.environ.get("CRYPTOGRAPHY_OSX_NO_LINK_FLAGS")
     if build_static == "1":
         libraries = []
     else:
         libraries = ['crypto']
+    libraries = []
 
 scrypt_module = Extension(
     '_scrypt',
