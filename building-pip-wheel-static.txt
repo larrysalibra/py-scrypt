@@ -1,0 +1,9 @@
+brew install openssl --build-bottle
+
+virtualenv .venv && source .venv/bin/activate
+
+LDFLAGS="/usr/local/opt/openssl/lib/libcrypto.a /usr/local/opt/openssl/lib/libssl.a ARCHFLAGS="-arch x86_64" CFLAGS=“-I/usr/local/opt/openssl/include" pip wheel ./py-scrypt --wheel-dir=wheelhouse --no-use-wheel
+
+pip install -f wheelhouse scrypt --no-index
+
+python -c "import script"

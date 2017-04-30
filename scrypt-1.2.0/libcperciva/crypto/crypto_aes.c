@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <openssl/aes.h>
+#include <openssl/buffer.h>
 
 #include "cpusupport.h"
 #include "crypto_aes_aesni.h"
@@ -106,6 +107,7 @@ crypto_aes_key_expand(const uint8_t * key, size_t len)
 	if (useaesni())
 		return (crypto_aes_key_expand_aesni(key, len));
 #endif
+	OPENSSL_cleanse(NULL, 0);
 
 	/* Allocate structure. */
 	if ((kexp = malloc(sizeof(AES_KEY))) == NULL)
