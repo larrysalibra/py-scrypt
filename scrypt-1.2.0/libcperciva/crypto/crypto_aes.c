@@ -4,6 +4,8 @@
 #include <string.h>
 
 #include <openssl/aes.h>
+// When static linking openssl, you need to ensure that
+//  x86_64cpuid.o is loaded, which is tricky.
 #include <openssl/buffer.h>
 
 #include "cpusupport.h"
@@ -107,7 +109,6 @@ crypto_aes_key_expand(const uint8_t * key, size_t len)
 	if (useaesni())
 		return (crypto_aes_key_expand_aesni(key, len));
 #endif
-	OPENSSL_cleanse(NULL, 0);
 
 	/* Allocate structure. */
 	if ((kexp = malloc(sizeof(AES_KEY))) == NULL)
@@ -165,4 +166,13 @@ crypto_aes_key_free(struct crypto_aes_key * key)
 
 	/* Free the key. */
 	free(key);
+}
+
+/***
+ * When static linking on OSX
+ ***/
+void
+dummy_to_force_symbol_loads()
+{
+  	OPENSSL_cleanse(NULL, 0);
 }

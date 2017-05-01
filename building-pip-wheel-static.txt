@@ -1,8 +1,10 @@
+# Ensure you have openssl installed and ready for bottling via brew 
 brew install openssl --build-bottle
+
 
 virtualenv .venv && source .venv/bin/activate
 
-LDFLAGS="/usr/local/opt/openssl/lib/libcrypto.a /usr/local/opt/openssl/lib/libssl.a ARCHFLAGS="-arch x86_64" CFLAGS=“-I/usr/local/opt/openssl/include" pip wheel ./py-scrypt --wheel-dir=wheelhouse --no-use-wheel
+PYSCRYPT_NO_LINK_FLAGS="1" LDFLAGS="/usr/local/opt/openssl/lib/libcrypto.a /usr/local/opt/openssl/lib/libssl.a" CFLAGS="-I/usr/local/opt/openssl/include" pip wheel ./py-scrypt --wheel-dir=wheelhouse --no-use-wheel
 
 pip install -f wheelhouse scrypt --no-index
 

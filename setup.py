@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, Extension
 
-import sys
+import sys, os
 import platform
 import struct
 
@@ -37,18 +37,17 @@ elif sys.platform.startswith('win32'):
 
 elif sys.platform.startswith('darwin') and platform.mac_ver()[0] < '10.6':
     define_macros = [('HAVE_SYSCTL_HW_USERMEM', '1')]
-    libraries = []
-#    libraries = ['crypto']
+    libraries = ['crypto']
 else:
     define_macros = [('HAVE_POSIX_MEMALIGN', '1'),
                      ('HAVE_SYSCTL_HW_USERMEM', '1')]
-#    build_static = os.environ.get("CRYPTOGRAPHY_OSX_NO_LINK_FLAGS")
-    if build_static == "1":
-        libraries = []
-    else:
-        libraries = ['crypto']
-    libraries = []
+    libraries = ['crypto']
 
+no_link_flags = os.environ.get("PYSCRYPT_NO_LINK_FLAGS")
+if no_link_flags == "1":
+    print "No linking!"
+    libraries = []
+    
 scrypt_module = Extension(
     '_scrypt',
     sources=['src/scrypt.c',
